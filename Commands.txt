@@ -4,31 +4,16 @@ sudo qemu-system-x86_64 -m 4096 -hda xenqemu.img -cdrom /var/lib/xen/images/ubun
 
  
 
- 
-
- 
-
 cd /var/lib/xen/images/ubuntu-network/
 sudo wget https://releases.ubuntu.com/16.04.7/ubuntu-16.04.6-server-i386.iso
 
- 
+username: ubuntu
+password: qemuubuntu
 
- 
 
- 
-
-username: qemuguest
-password: qemuguest
-
- 
-
- 
-
- 
-
-qemu-img convert xenqemu3.img -O raw newqemu.img
-sudo lvcreate -L 10G -n qemuxen /dev/in720-anthonyUbuntu-vg
-sudo dd if=newqemu.img of=/dev/in720-samsojl1-vg/qemuxen
+qemu-img convert xenqemu.img -O raw newqemu.img
+sudo lvcreate -L 30G -n qemuxen /dev/IN720AnthonyUbuntu-vg
+sudo dd if=newqemu.img of=/dev/IN720AnthonyUbuntu-vg/qemuxen
 sudo cp xlexample.pvlinux qemu.cfg
 sudo vim /etc/xen/qemu.cfg
     comment out kernel
