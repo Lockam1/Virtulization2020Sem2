@@ -6,7 +6,6 @@ import time
 conn = openstack.connect(cloud_name='openstack')
 serverList = [ "lockam1-app", "lockam1-db", "lockam1-web" ]
 
-
 network = conn.network.find_network(NETWORK)
 router = conn.network.find_router(ROUTER)
 subnet = conn.network.find_subnet(SUBNET)
