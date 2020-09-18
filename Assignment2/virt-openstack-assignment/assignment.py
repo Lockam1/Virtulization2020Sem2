@@ -31,8 +31,8 @@ def create():
         print("A Network already exists.")
         pass
 
-    # CREATE SUBNET
-    print("Creating Subnet...")
+    # Generate subnetwork
+    print("Generating subnet")
 
     if conn.network.find_subnet(SUBNET) is None:
         subnet = conn.network.create_subnet(
@@ -41,7 +41,7 @@ def create():
             ip_version='4',
             cidr='192.168.50.0/24',
             gateway_ip='192.168.50.1')
-        print("Subnet successfully created.")
+        print("Subnet created.")
     else:
         print("Subnet already exists.")
         pass
