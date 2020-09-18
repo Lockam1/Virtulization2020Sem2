@@ -46,24 +46,22 @@ def create():
         print("Subnet already exists.")
         pass
 
-    # CREATE ROUTER
-    print("Creating Router...")
+    #make the virtual router
+    print("Creating Router")
 
     if conn.network.find_router('lockam1-rtr') is None:
-
         router = conn.network.create_router(
             name='lockam1-rtr',
             external_gateway_info={ 'network_id' : public_net.id }
         )
-        print("Router successfully created.")
+        print("Router has been created.")
         conn.network.add_interface_to_router(router, subnet.id)
     else:
         print("Router already exists.")
         pass
 
 
-    # LAUNCH INSTANCES     
-
+    #Launch    
     for serverName in serverList:
         if conn.compute.find_server(name_or_id=serverName) is None:
             SERVER = serverName
