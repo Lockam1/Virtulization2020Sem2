@@ -84,18 +84,93 @@ def run():
     ''' Start  a set of Openstack virtual machines
     if they are not already running.
     '''
+    # Run the machines
+    for name in serverList:        
+        server = conn.compute.find_server(name_or_id=name)
+        if server is not None:
+            ser = conn.compute.get_server(server)
+            if ser.status == "SHUTOFF":
+                print(name + " starting..")
+                conn.compute.start_server(ser)
+                print(name + " running...")
+            elif ser.status == "ACTIVE":
+                print(name + " , This machine is already running.")            
+        else:
+            print(name + " does'nt exist.")
     pass
 
 def stop():
     ''' Stop  a set of Openstack virtual machines
     if they are running.
     '''
+    for name in serverList:        
+        server = conn.compute.find_server(name_or_id=name)
+        if server is not None:
+            ser = conn.compute.get_server(server)
+            if ser.status == "ACTIVE":
+                print(name + " stopping...")
+                conn.compute.stop_server(ser)
+                print(name + " stopped.")
+            elif ser.status == "SHUTOFF":
+                print(name + " is already off.")            
+        else:
+            print(name + " does'nt exist.")
     pass
 
 def destroy():
     ''' Tear down the set of Openstack resources 
     produced by the create action
     '''
+    #Delete and remove the openstack server machines
+    for server in serverList:
+        ser = conn.compute.find_server(name_or_id=server)
+
+        if ser is not None:
+            if server == 'lockam1-web':
+                dserver = conn.compute.get_server(ser)
+                server_floating_ip = dserver['addresses'][NETWORK][1]['addr']
+
+                print("Removing Floating IP")
+                conn.compute.remove_floating_ip_from_server(dserver, server_floating_ip)
+
+                print("Floating IP removed from " + ser.name)
+                drop_ip = conn.network.find_ip(server_floating_ip)
+                conn.network.delete_ip(drop_ip)
+                time.sleep(3)
+
+                print("IP Dropped")
+
+            conn.compute.delete_server(ser)
+
+            print(ser.name + " Removed.")
+        else:
+            print(server + " does not exist.") 
+
+    #Remove the router
+        if router is not None:
+            delInterface = conn.network.remove_interface_from_router(router, subnet.id)
+            delRouter = conn.network.delete_router(router)
+            time.sleep(3)
+            print("Router removed")
+        else:
+            print("Network does not exist.")
+
+    #Remove the subnet
+        if subnet is not None:
+            delSubnet = conn.network.delete_subnet(subnet)
+            time.sleep(3)
+            print("Subnet removed")
+        else:
+            print("Subnet does not exist.")
+
+    #Remove the network.
+        network = conn.network.find_network("bradcw1-net")
+        if network is not None:
+            delNetwork = conn.network.delete_network(network)
+            time.sleep(3)
+            print("Network removed")
+        else:
+            print("Network does not exist.")  
     pass
 
 def status():
