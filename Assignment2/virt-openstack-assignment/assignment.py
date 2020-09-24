@@ -177,6 +177,18 @@ def status():
     ''' Print a status report on the OpenStack
     virtual machines created by the create action.
     '''
+    #Show a status of the servers including name
+    for server in serverList:
+        serverid = conn.compute.find_server(name_or_id=server)
+        if serverid is None: 
+            print(server + " does not exist.")
+        elif serverid is not None:
+            ser = conn.compute.get_server(serverid)
+            print("Name: " + ser.name + "\n" 
+                "Status: " + ser.status) 
+            for value in ser.addresses[NETWORK]:
+                print("IP: " + value["addr"])
+            print("\n") 
     pass
 
 
